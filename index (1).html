@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fresha — Share Your Story</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --p:#6B3FA0;--pd:#4A2875;--pm:#9B6FD0;--pl:#EDE6F7;--pll:#F7F3FD;
+  --nav:#2D1F52;--gold:#C9A84C;
+  --ink:#1A1325;--mid:#4A3D5C;--ghost:#8A7FA0;
+  --white:#ffffff;--cream:#FAF8FF;--border:#e8e0f5;
+  --success:#2E7D52;--success-bg:#EAF5EE;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
+
+/* ── HEADER ── */
+.site-header{background:var(--nav);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-weight:600;font-size:17px;color:white;letter-spacing:-0.4px;}
+.nav-tabs{display:flex;gap:4px;}
+.nav-tab{padding:7px 16px;font-size:13px;font-weight:500;border:none;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.55);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.nav-tab.active{background:var(--pm);color:white;}
+
+/* ── SURVEY SHELL ── */
+.survey-shell{
+  background:linear-gradient(160deg,var(--nav) 0%,var(--pd) 55%,#3D2070 100%);
+  min-height:calc(100vh - 50px);
+  display:flex;align-items:center;justify-content:center;
+  padding:60px 24px 80px;
+  position:relative;overflow:hidden;
+}
+.survey-shell::before{content:'';position:absolute;top:-120px;right:-100px;width:380px;height:380px;border-radius:50%;background:rgba(155,111,208,0.13);}
+.survey-shell::after{content:'';position:absolute;bottom:-80px;left:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,0.04);}
+
+.survey-inner{width:100%;max-width:580px;position:relative;z-index:1;}
+
+.prog-bar{height:3px;background:rgba(255,255,255,0.12);border-radius:2px;margin-bottom:2.5rem;}
+.prog-fill{height:100%;background:var(--pm);border-radius:2px;transition:width 0.4s ease;}
+
+.step-lbl{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--pm);margin-bottom:10px;font-weight:500;}
+.q-title{font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,34px);font-weight:400;color:white;line-height:1.2;margin-bottom:8px;}
+.q-hint{font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:24px;line-height:1.65;font-weight:300;}
+
+.cover-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2rem;}
+.cover-tag{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);border-radius:100px;padding:5px 14px;font-size:12px;color:rgba(255,255,255,0.5);}
+
+/* choices */
+.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
+.ch{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.14);border-radius:10px;cursor:pointer;font-size:14px;color:rgba(255,255,255,0.7);transition:all 0.12s;}
+.ch:hover{border-color:var(--pm);background:rgba(107,63,160,0.28);}
+.ch.sel{border-color:var(--pm);background:rgba(107,63,160,0.4);color:white;}
+.ch-k{width:22px;height:22px;border-radius:5px;background:rgba(255,255,255,0.1);border:0.5px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);flex-shrink:0;}
+.ch.sel .ch-k{background:var(--pm);border-color:var(--pm);color:white;}
+.ch-sub{font-size:11px;color:rgba(255,255,255,0.3);margin-left:auto;}
+
+/* inputs */
+.q-inp{width:100%;font-size:18px;font-weight:300;font-family:'DM Sans',sans-serif;background:transparent;border:none;border-bottom:2px solid rgba(255,255,255,0.2);color:white;padding:12px 0;outline:none;caret-color:var(--pm);transition:border-color 0.2s;}
+.q-inp::placeholder{color:rgba(255,255,255,0.22);}
+.q-inp:focus{border-bottom-color:var(--pm);}
+.q-ta{width:100%;min-height:110px;font-size:15px;font-weight:300;font-family:'DM Sans',sans-serif;background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.14);border-radius:10px;color:white;padding:14px;outline:none;resize:none;caret-color:var(--pm);transition:border-color 0.2s;line-height:1.65;}
+.q-ta::placeholder{color:rgba(255,255,255,0.22);}
+.q-ta:focus{border-color:var(--pm);}
+
+/* stars */
+.star-row{display:flex;gap:8px;margin-bottom:8px;}
+.sstar{font-size:34px;cursor:pointer;color:rgba(255,255,255,0.18);transition:color 0.1s;}
+.sstar.lit{color:var(--gold);}
+
+/* upload */
+.upload-box{border:1.5px dashed rgba(255,255,255,0.22);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;position:relative;background:rgba(255,255,255,0.05);margin-bottom:10px;transition:all 0.15s;}
+.upload-box:hover{border-color:var(--pm);background:rgba(107,63,160,0.15);}
+.upload-box input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:28px;margin-bottom:8px;}
+.upload-lbl{font-size:13px;color:rgba(255,255,255,0.4);}
+.upload-lbl strong{color:var(--pm);}
+.prev-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.prev-img{width:72px;height:72px;border-radius:10px;object-fit:cover;border:1.5px solid rgba(155,111,208,0.5);}
+.notice{font-size:12px;color:var(--pm);background:rgba(107,63,160,0.2);border:0.5px solid rgba(107,63,160,0.4);border-radius:8px;padding:8px 12px;margin-bottom:10px;display:none;}
+
+/* buttons */
+.btn-row{display:flex;align-items:center;gap:12px;margin-top:24px;flex-wrap:wrap;}
+.btn-main{display:inline-flex;align-items:center;gap:8px;background:white;color:var(--p);border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.15s;}
+.btn-main:hover{opacity:0.88;}
+.btn-back{background:none;border:none;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.3);font-family:'DM Sans',sans-serif;transition:color 0.15s;}
+.btn-back:hover{color:rgba(255,255,255,0.65);}
+.enter-hint{font-size:11px;color:rgba(255,255,255,0.2);}
+
+/* ── RESULT ── */
+.result-outer{max-width:700px;margin:0 auto;padding:32px 24px 60px;}
+.result-label{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--pm);margin-bottom:12px;font-weight:500;}
+.result-heading{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:var(--ink);margin-bottom:28px;line-height:1.25;}
+
+/* Partnership card */
+.p-card{background:linear-gradient(145deg,var(--pd) 0%,var(--nav) 55%,#1A0F35 100%);border-radius:20px;overflow:hidden;margin-bottom:2rem;box-shadow:0 24px 60px rgba(45,31,82,0.35);position:relative;}
+.p-card::before{content:'';position:absolute;top:-100px;right:-80px;width:320px;height:320px;border-radius:50%;background:rgba(155,111,208,0.1);}
+
+.pc-top{padding:32px 32px 24px;position:relative;z-index:1;}
+.pc-eyebrow{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--pm);margin-bottom:20px;font-weight:500;}
+
+.pc-logos{display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap;}
+.pc-logo-fresha{background:var(--p);border-radius:10px;padding:8px 16px;font-size:15px;font-weight:700;color:white;letter-spacing:-0.5px;font-family:'DM Sans',sans-serif;}
+.pc-amp{font-size:20px;color:rgba(255,255,255,0.2);}
+.pc-partner-logo-img{width:50px;height:50px;border-radius:10px;object-fit:contain;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);}
+.pc-partner-logo-init{width:50px;height:50px;border-radius:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;color:white;}
+.pc-partner-name{flex:1;}
+.pc-partner-name h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:white;line-height:1.2;}
+.pc-partner-name h2 em{color:var(--pm);font-style:italic;}
+.pc-partner-name p{font-size:12px;color:rgba(255,255,255,0.3);margin-top:3px;}
+
+.pc-divider{border:none;border-top:0.5px solid rgba(255,255,255,0.1);margin:0 32px 24px;}
+
+.pc-quote-sec{padding:0 32px 28px;position:relative;z-index:1;}
+.pc-stars{font-size:18px;color:var(--gold);letter-spacing:3px;margin-bottom:16px;}
+.pc-quote{font-family:'Playfair Display',serif;font-size:clamp(15px,2.5vw,19px);line-height:1.7;color:rgba(255,255,255,0.92);font-style:italic;margin-bottom:22px;padding-left:18px;border-left:3px solid var(--pm);}
+.pc-person{display:flex;align-items:center;gap:14px;}
+.pc-av{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid rgba(155,111,208,0.5);flex-shrink:0;}
+.pc-av-init{width:46px;height:46px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;color:white;flex-shrink:0;border:2px solid rgba(155,111,208,0.5);}
+.pc-pname{font-size:14px;font-weight:500;color:white;}
+.pc-prole{font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.pc-feat-badge{display:inline-block;background:rgba(107,63,160,0.4);border:0.5px solid var(--pm);border-radius:100px;padding:3px 10px;font-size:11px;color:var(--pm);font-weight:500;margin-top:6px;}
+
+.pc-footer{background:rgba(0,0,0,0.28);border-top:0.5px solid rgba(255,255,255,0.07);padding:18px 32px;display:flex;align-items:center;gap:14px;position:relative;z-index:1;}
+.pc-biz-img{width:68px;height:50px;border-radius:8px;object-fit:cover;border:1px solid rgba(255,255,255,0.1);flex-shrink:0;}
+.pc-biz-ph{width:68px;height:50px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px dashed rgba(255,255,255,0.14);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.pc-biz-info{flex:1;}
+.pc-biz-name{font-size:13px;font-weight:500;color:white;}
+.pc-biz-loc{font-size:11px;color:rgba(255,255,255,0.32);margin-top:2px;}
+.pc-result{background:rgba(46,125,82,0.25);border:0.5px solid rgba(46,125,82,0.5);border-radius:10px;padding:9px 14px;text-align:center;flex-shrink:0;}
+.pc-res-lbl{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#6FCF97;font-weight:500;}
+.pc-res-val{font-size:12px;font-weight:500;color:#6FCF97;margin-top:2px;}
+.pc-fresha-mark{font-size:14px;font-weight:600;color:rgba(255,255,255,0.18);letter-spacing:-0.3px;flex-shrink:0;}
+
+/* Use + seq */
+.r-divider{border:none;border-top:1px solid var(--border);margin:1.75rem 0;}
+.r-sec-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ghost);margin-bottom:12px;font-weight:500;}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;}
+.use-card{background:var(--pll);border:0.5px solid rgba(107,63,160,0.2);border-radius:10px;padding:14px 16px;}
+.use-ttl{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--p);margin-bottom:6px;font-weight:500;}
+.use-body{font-size:12px;color:var(--mid);line-height:1.6;}
+.seq{display:flex;flex-direction:column;gap:8px;}
+.seq-step{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:white;border:0.5px solid var(--border);border-radius:10px;}
+.seq-num{width:24px;height:24px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--pd);flex-shrink:0;margin-top:1px;}
+.seq-ttl{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;}
+.seq-body{font-size:11px;color:var(--ghost);line-height:1.55;}
+.seq-tag{margin-left:auto;flex-shrink:0;font-size:9px;padding:3px 8px;border-radius:100px;font-weight:500;}
+.seq-tag.e{background:var(--success-bg);color:var(--success);}
+.seq-tag.p{background:var(--pl);color:var(--pd);}
+.act-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:1.5rem;}
+.act-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:white;color:var(--ink);font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.act-btn:hover{background:var(--pll);border-color:var(--pm);}
+.act-btn.pri{background:var(--p);border-color:var(--p);color:white;}
+.act-btn.pri:hover{background:var(--pd);}
+.flash{font-size:12px;color:var(--success);margin-top:8px;min-height:18px;}
+
+/* submitting state */
+.submitting-overlay{display:none;position:fixed;inset:0;background:rgba(45,31,82,0.75);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+.submitting-overlay.on{display:flex;}
+.spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,0.2);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.submitting-text{font-size:14px;color:white;font-weight:300;}
+
+/* ── SHOWCASE ── */
+.showcase-outer{max-width:700px;margin:0 auto;padding:32px 24px 60px;}
+.am-form-card{background:white;border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:2rem;box-shadow:0 2px 12px rgba(107,63,160,0.06);}
+.am-form-card h3{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.am-form-card p{font-size:13px;color:var(--ghost);margin-bottom:20px;}
+.am-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.am-f{margin-bottom:12px;}
+.am-f label{font-size:11px;color:var(--ghost);display:block;margin-bottom:5px;font-weight:500;letter-spacing:0.3px;}
+.am-f input,.am-f textarea,.am-f select{width:100%;font-size:13px;font-family:'DM Sans',sans-serif;}
+.am-f textarea{min-height:68px;}
+.am-upload-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.am-up-cell label{font-size:11px;color:var(--ghost);display:block;margin-bottom:5px;font-weight:500;}
+.am-up-mini{border:1.5px dashed var(--border);border-radius:10px;padding:16px 10px;text-align:center;cursor:pointer;position:relative;background:var(--pll);transition:all 0.15s;}
+.am-up-mini:hover{border-color:var(--pm);}
+.am-up-mini input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.am-up-mini-icon{font-size:20px;color:var(--pm);margin-bottom:4px;}
+.am-up-mini p{font-size:10px;color:var(--ghost);}
+.am-prev{width:100%;height:54px;object-fit:cover;border-radius:8px;display:none;border:1px solid var(--border);margin-top:5px;}
+.am-prev-logo{width:100%;height:54px;object-fit:contain;border-radius:8px;display:none;border:1px solid var(--border);margin-top:5px;}
+.am-star{font-size:22px;cursor:pointer;color:var(--border);transition:color 0.1s;}
+.am-star.lit{color:var(--gold);}
+.add-btn{display:inline-flex;align-items:center;gap:8px;background:var(--p);color:white;border:none;border-radius:10px;padding:11px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.15s;}
+.add-btn:hover{opacity:0.88;}
+.am-msg{font-size:12px;margin-top:8px;min-height:18px;}
+
+/* gallery */
+.gallery-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.gallery-header h3{font-size:16px;font-weight:500;color:var(--ink);}
+.gallery-count{font-size:12px;color:var(--ghost);}
+.gal-empty{text-align:center;padding:4rem 1rem;color:var(--ghost);font-size:14px;border:1.5px dashed var(--border);border-radius:16px;}
+.gal-empty-icon{font-size:40px;margin-bottom:12px;}
+.gallery{display:flex;flex-direction:column;gap:14px;}
+.gal-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(107,63,160,0.05);transition:box-shadow 0.15s;}
+.gal-card:hover{box-shadow:0 6px 20px rgba(107,63,160,0.1);}
+.gal-row{display:flex;}
+.gal-img{width:160px;height:120px;object-fit:cover;flex-shrink:0;}
+.gal-img-ph{width:160px;height:120px;background:var(--pll);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;}
+.gal-body{flex:1;padding:14px 16px;min-width:0;}
+.gal-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.gal-logo{width:34px;height:34px;object-fit:contain;border-radius:6px;border:1px solid var(--border);flex-shrink:0;}
+.gal-logo-ph{width:34px;height:34px;border-radius:6px;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--p);flex-shrink:0;}
+.gal-info{flex:1;}
+.gal-name{font-size:13px;font-weight:500;color:var(--ink);}
+.gal-loc{font-size:11px;color:var(--ghost);margin-top:1px;}
+.gal-del{background:none;border:none;cursor:pointer;color:var(--ghost);font-size:14px;padding:3px 6px;border-radius:5px;transition:all 0.12s;line-height:1;}
+.gal-del:hover{color:#C0392B;background:#FDECEA;}
+.gal-quote{font-size:12px;color:var(--mid);line-height:1.6;font-style:italic;margin-bottom:7px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.gal-blurb{font-size:11px;color:var(--ghost);line-height:1.5;margin-bottom:7px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.gal-foot{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.gal-feat{background:var(--pl);color:var(--pd);font-size:10px;padding:2px 9px;border-radius:100px;font-weight:500;}
+.gal-res{background:var(--success-bg);color:var(--success);font-size:10px;padding:2px 9px;border-radius:100px;font-weight:500;}
+.gal-vid{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--p);text-decoration:none;font-weight:500;}
+.gal-stars{font-size:11px;color:var(--gold);margin-left:auto;}
+
+@media(max-width:500px){
+  .am-grid,.am-upload-row{grid-template-columns:1fr;}
+  .use-grid{grid-template-columns:1fr;}
+  .gal-img,.gal-img-ph{width:100px;height:100px;}
+}
+</style>
+</head>
+<body>
+
+<div class="submitting-overlay" id="submitting">
+  <div class="spinner"></div>
+  <p class="submitting-text">Saving your story...</p>
+</div>
+
+<header class="site-header">
+  <div class="logo">fresha</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPane('survey')">Share your story</button>
+    <button class="nav-tab" onclick="showPane('showcase')">Partner showcase</button>
+  </div>
+</header>
+
+<!-- ══ SURVEY ════════════════════════════════════════════════════════════════ -->
+<div id="pane-survey">
+<div class="survey-shell">
+<div class="survey-inner">
+  <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+
+  <!-- Cover -->
+  <div id="s0">
+    <p class="step-lbl">Fresha · Partner success programme</p>
+    <h1 class="q-title">Share your<br><em style="color:var(--pm);font-style:italic">Fresha story.</em></h1>
+    <p class="q-hint">Takes 3 minutes. Your experience helps other business owners across South East Asia discover what's possible.</p>
+    <div class="cover-tags">
+      <span class="cover-tag">📍 Your business</span>
+      <span class="cover-tag">💬 Your experience</span>
+      <span class="cover-tag">⭐ Your results</span>
+      <span class="cover-tag">📸 Your photos</span>
+    </div>
+    <div class="btn-row"><button class="btn-main" onclick="nxt()">Let's go →</button></div>
+  </div>
+
+  <!-- S1 Name -->
+  <div id="s1" style="display:none">
+    <p class="step-lbl">1 of 10 — Your name</p>
+    <h2 class="q-title">What's your name?</h2>
+    <p class="q-hint">First name is fine — this appears on your partnership card.</p>
+    <input class="q-inp" id="q-name" type="text" placeholder="e.g. Aisha" maxlength="60" onkeydown="if(event.key==='Enter'){event.preventDefault();nxt();}">
+    <div class="btn-row"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button></div>
+  </div>
+
+  <!-- S2 Biz -->
+  <div id="s2" style="display:none">
+    <p class="step-lbl">2 of 10 — Your business</p>
+    <h2 class="q-title">Name of your business?</h2>
+    <p class="q-hint">Salon, spa, clinic — whatever you run.</p>
+    <input class="q-inp" id="q-biz" type="text" placeholder="e.g. Aisha Beauty Studio" maxlength="80" onkeydown="if(event.key==='Enter'){event.preventDefault();nxt();}">
+    <div class="btn-row"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button></div>
+  </div>
+
+  <!-- S3 Country -->
+  <div id="s3" style="display:none">
+    <p class="step-lbl">3 of 10 — Location</p>
+    <h2 class="q-title">Which country are you in?</h2>
+    <p class="q-hint">We'll show your story to businesses in similar markets.</p>
+    <div class="choices" id="cg-country">
+      <div class="ch" onclick="pickCountry(this,'Singapore')"><span class="ch-k">A</span>🇸🇬 Singapore</div>
+      <div class="ch" onclick="pickCountry(this,'Hong Kong')"><span class="ch-k">B</span>🇭🇰 Hong Kong</div>
+      <div class="ch" onclick="pickCountry(this,'Malaysia')"><span class="ch-k">C</span>🇲🇾 Malaysia</div>
+      <div class="ch" onclick="pickCountry(this,'Indonesia')"><span class="ch-k">D</span>🇮🇩 Indonesia</div>
+      <div class="ch" onclick="pickCountry(this,'Philippines')"><span class="ch-k">E</span>🇵🇭 Philippines</div>
+      <div class="ch" onclick="pickCountry(this,'Thailand')"><span class="ch-k">F</span>🇹🇭 Thailand</div>
+      <div class="ch" onclick="pickCountry(this,'Vietnam')"><span class="ch-k">G</span>🇻🇳 Vietnam</div>
+    </div>
+    <input type="hidden" id="q-country">
+    <div class="btn-row" style="margin-top:14px"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button></div>
+  </div>
+
+  <!-- S4 Feature -->
+  <div id="s4" style="display:none">
+    <p class="step-lbl">4 of 10 — Feature</p>
+    <h2 class="q-title">Which feature made the biggest difference?</h2>
+    <p class="q-hint">Pick the one you couldn't live without.</p>
+    <div class="notice" id="pay-notice">ℹ Payments isn't available in your market yet — we've removed it below.</div>
+    <div class="choices" id="cg-feat">
+      <div class="ch feat-opt" data-feat="Online Booking" onclick="pickFeat(this,'Online Booking')"><span class="ch-k">A</span>Online Booking</div>
+      <div class="ch feat-opt" data-feat="Payments" id="feat-pay" onclick="pickFeat(this,'Payments')"><span class="ch-k">B</span>Payments</div>
+      <div class="ch feat-opt" data-feat="Google Boost" onclick="pickFeat(this,'Google Boost')"><span class="ch-k">C</span>Google Boost</div>
+      <div class="ch feat-opt" data-feat="Fresha Insights" onclick="pickFeat(this,'Fresha Insights')"><span class="ch-k">D</span>Fresha Insights</div>
+      <div class="ch feat-opt" data-feat="Loyalty Program" onclick="pickFeat(this,'Loyalty Program')"><span class="ch-k">E</span>Loyalty Program</div>
+      <div class="ch feat-opt" data-feat="Marketing & Campaigns" onclick="pickFeat(this,'Marketing & Campaigns')"><span class="ch-k">F</span>Marketing & Campaigns</div>
+      <div class="ch feat-opt" data-feat="Premium Support" onclick="pickFeat(this,'Premium Support')"><span class="ch-k">G</span>Premium Support <span class="ch-sub">24/7 live chat & phone</span></div>
+      <div class="ch feat-opt" data-feat="Account Management" onclick="pickFeat(this,'Account Management')"><span class="ch-k">H</span>Account Management</div>
+    </div>
+    <input type="hidden" id="q-feat">
+    <div class="btn-row" style="margin-top:14px"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button></div>
+  </div>
+
+  <!-- S5 Rating -->
+  <div id="s5" style="display:none">
+    <p class="step-lbl">5 of 10 — Rating</p>
+    <h2 class="q-title">How would you rate Fresha overall?</h2>
+    <p class="q-hint">Be honest — it helps us improve.</p>
+    <div class="star-row" id="sstars">
+      <span class="sstar lit" onclick="sRate(1)">★</span>
+      <span class="sstar lit" onclick="sRate(2)">★</span>
+      <span class="sstar lit" onclick="sRate(3)">★</span>
+      <span class="sstar lit" onclick="sRate(4)">★</span>
+      <span class="sstar lit" onclick="sRate(5)">★</span>
+    </div>
+    <input type="hidden" id="q-rating" value="5">
+    <div class="btn-row" style="margin-top:20px"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button></div>
+  </div>
+
+  <!-- S6 Quote -->
+  <div id="s6" style="display:none">
+    <p class="step-lbl">6 of 10 — Your story</p>
+    <h2 class="q-title">What has Fresha done for your business?</h2>
+    <p class="q-hint">Be specific — "bookings went up 40%" lands better than "it's great".</p>
+    <textarea class="q-ta" id="q-quote" placeholder="Before Fresha I managed appointments in a notebook. Now 60% of bookings come in overnight while I sleep..." maxlength="500"></textarea>
+    <div class="btn-row"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button></div>
+  </div>
+
+  <!-- S7 Result -->
+  <div id="s7" style="display:none">
+    <p class="step-lbl">7 of 10 — The result</p>
+    <h2 class="q-title">Any specific result or number?</h2>
+    <p class="q-hint">Optional but powerful — revenue up, time saved, bookings increased.</p>
+    <input class="q-inp" id="q-result" type="text" placeholder="e.g. 40% more bookings in 3 months" maxlength="120" onkeydown="if(event.key==='Enter'){event.preventDefault();nxt();}">
+    <div class="btn-row"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button><span class="enter-hint">optional — press Enter ↵</span></div>
+  </div>
+
+  <!-- S8 Person photo -->
+  <div id="s8" style="display:none">
+    <p class="step-lbl">8 of 10 — Your photo</p>
+    <h2 class="q-title">Add a photo of yourself.</h2>
+    <p class="q-hint">Optional — a headshot makes your story <strong style="color:white">3× more trusted.</strong></p>
+    <div class="upload-box">
+      <input type="file" accept="image/*" id="qf-person" onchange="prevFile(this,'pp','pUrl')">
+      <div class="upload-icon">🤳</div>
+      <p class="upload-lbl">Click or drag & drop · <strong>Your photo</strong></p>
+    </div>
+    <div class="prev-row" id="pp"></div>
+    <div class="btn-row"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button><span class="enter-hint">optional</span></div>
+  </div>
+
+  <!-- S9 Biz photo -->
+  <div id="s9" style="display:none">
+    <p class="step-lbl">9 of 10 — Your salon</p>
+    <h2 class="q-title">Got a photo of your business?</h2>
+    <p class="q-hint">Optional — reception, treatment room, your team. Any photo of your space.</p>
+    <div class="upload-box">
+      <input type="file" accept="image/*" id="qf-biz" onchange="prevFile(this,'pb','bUrl')">
+      <div class="upload-icon">🏪</div>
+      <p class="upload-lbl">Click or drag & drop · <strong>Salon photo</strong></p>
+    </div>
+    <div class="prev-row" id="pb"></div>
+    <div class="btn-row"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button><span class="enter-hint">optional</span></div>
+  </div>
+
+  <!-- S10 Consent -->
+  <div id="s10" style="display:none">
+    <p class="step-lbl">10 of 10 — One last thing</p>
+    <h2 class="q-title">Happy for us to share your story?</h2>
+    <p class="q-hint">We'll never share your contact details — just your quote and photos.</p>
+    <div class="choices" id="cg-consent">
+      <div class="ch" onclick="pick(this,'q-consent','full','cg-consent')"><span class="ch-k">A</span>Yes — use my name, business and photos</div>
+      <div class="ch" onclick="pick(this,'q-consent','anon','cg-consent')"><span class="ch-k">B</span>Yes — first name only please</div>
+      <div class="ch" onclick="pick(this,'q-consent','no','cg-consent')"><span class="ch-k">C</span>Internal use only</div>
+    </div>
+    <input type="hidden" id="q-consent">
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn-main" onclick="doSubmit()">Submit my story ✨</button>
+      <button class="btn-back" onclick="bck()">← Back</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Result — outside the purple shell -->
+<div id="s-result" style="display:none">
+<div class="result-outer">
+  <p class="result-label">Your partnership card</p>
+  <h2 class="result-heading">Here's your Fresha story — ready to share.</h2>
+
+  <div class="p-card">
+    <div class="pc-top">
+      <p class="pc-eyebrow">Fresha Partner · South East Asia</p>
+      <div class="pc-logos">
+        <div class="pc-logo-fresha">fresha</div>
+        <span class="pc-amp">&amp;</span>
+        <div id="r-partner-logo"></div>
+        <div class="pc-partner-name">
+          <h2>Fresha &amp; <em id="r-biz-title"></em></h2>
+          <p>Partnership</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pc-divider"></div>
+
+    <div class="pc-quote-sec">
+      <div class="pc-stars" id="r-stars"></div>
+      <div class="pc-quote" id="r-quote"></div>
+      <div class="pc-person">
+        <div id="r-av"></div>
+        <div>
+          <div class="pc-pname" id="r-name"></div>
+          <div class="pc-prole" id="r-role"></div>
+          <span class="pc-feat-badge" id="r-feat"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pc-footer">
+      <div id="r-biz-img"></div>
+      <div class="pc-biz-info">
+        <div class="pc-biz-name" id="r-biz"></div>
+        <div class="pc-biz-loc" id="r-loc"></div>
+      </div>
+      <div id="r-res-wrap" style="display:none" class="pc-result">
+        <div class="pc-res-lbl">Result</div>
+        <div class="pc-res-val" id="r-res-val"></div>
+      </div>
+      <div class="pc-fresha-mark">fresha</div>
+    </div>
+  </div>
+
+  <hr class="r-divider">
+  <p class="r-sec-lbl">How to use this card</p>
+  <div class="use-grid">
+    <div class="use-card"><div class="use-ttl">Feature adoption</div><p class="use-body" id="r-use1"></p></div>
+    <div class="use-card"><div class="use-ttl">Prospect outreach</div><p class="use-body" id="r-use2"></p></div>
+  </div>
+  <hr class="r-divider">
+  <p class="r-sec-lbl">Suggested send sequence</p>
+  <div class="seq" id="r-seq"></div>
+  <div class="act-bar">
+    <button class="act-btn pri" onclick="window.print()">🖨 Print / Save PDF</button>
+    <button class="act-btn" onclick="copyWA()">📲 Copy for WhatsApp</button>
+    <button class="act-btn" onclick="resetSurvey()">↩ Submit another</button>
+  </div>
+  <p class="flash" id="copied"></p>
+</div>
+</div>
+</div>
+
+<!-- ══ SHOWCASE ═══════════════════════════════════════════════════════════════ -->
+<div id="pane-showcase" style="display:none">
+<div class="showcase-outer">
+
+  <div class="am-form-card">
+    <h3>Add a partner testimonial</h3>
+    <p>Fill in the details, upload photos and a logo, add your AM blurb and an optional video link. Hit "Add to showcase" and it appears in the gallery below.</p>
+
+    <div class="am-grid">
+      <div class="am-f"><label>Partner name *</label><input type="text" id="am-name" placeholder="e.g. Aisha Tan"></div>
+      <div class="am-f"><label>Business name *</label><input type="text" id="am-biz" placeholder="e.g. Aisha Beauty Studio"></div>
+      <div class="am-f"><label>Country</label>
+        <select id="am-country"><option value="">Select...</option><option>Singapore</option><option>Hong Kong</option><option>Malaysia</option><option>Indonesia</option><option>Philippines</option><option>Thailand</option><option>Vietnam</option></select>
+      </div>
+      <div class="am-f"><label>Feature highlighted</label>
+        <select id="am-feat"><option value="">Select...</option><option>Online Booking</option><option>Payments</option><option>Google Boost</option><option>Fresha Insights</option><option>Loyalty Program</option><option>Marketing & Campaigns</option><option>Premium Support</option><option>Account Management</option></select>
+      </div>
+    </div>
+
+    <div class="am-f"><label>Their quote *</label><textarea id="am-quote" placeholder="The partner's testimonial in their own words..."></textarea></div>
+    <div class="am-f"><label>AM blurb <span style="font-weight:400;color:var(--ghost)">(optional — your context for prospects)</span></label><textarea id="am-blurb" placeholder="e.g. Aisha joined Fresha in Q1 2025. Within 60 days she had fully migrated online and her no-show rate dropped to under 5%..."></textarea></div>
+
+    <div class="am-grid">
+      <div class="am-f"><label>Star rating</label>
+        <div style="display:flex;gap:5px;margin-top:6px" id="am-stars-row">
+          <span class="am-star lit" onclick="amRate(1)">★</span><span class="am-star lit" onclick="amRate(2)">★</span><span class="am-star lit" onclick="amRate(3)">★</span><span class="am-star lit" onclick="amRate(4)">★</span><span class="am-star lit" onclick="amRate(5)">★</span>
+        </div>
+        <input type="hidden" id="am-rating" value="5">
+      </div>
+      <div class="am-f"><label>Result / metric <span style="font-weight:400;color:var(--ghost)">(optional)</span></label><input type="text" id="am-result" placeholder="e.g. 40% more bookings"></div>
+    </div>
+
+    <div class="am-f"><label>Video link <span style="font-weight:400;color:var(--ghost)">(optional — YouTube or Loom)</span></label><input type="text" id="am-video" placeholder="https://youtube.com/..."></div>
+
+    <div class="am-upload-row">
+      <div class="am-up-cell">
+        <label>Partner photo</label>
+        <div class="am-up-mini"><input type="file" accept="image/*" onchange="amPrev(this,'am-av','amAv')"><div class="am-up-mini-icon">🤳</div><p>Upload photo</p></div>
+        <img class="am-prev" id="am-av">
+      </div>
+      <div class="am-up-cell">
+        <label>Salon / business image</label>
+        <div class="am-up-mini"><input type="file" accept="image/*" onchange="amPrev(this,'am-biz-img','amBiz')"><div class="am-up-mini-icon">🏪</div><p>Upload image</p></div>
+        <img class="am-prev" id="am-biz-img">
+      </div>
+      <div class="am-up-cell">
+        <label>Company logo</label>
+        <div class="am-up-mini"><input type="file" accept="image/*" onchange="amPrev(this,'am-logo','amLogo')"><div class="am-up-mini-icon">🏢</div><p>Upload logo</p></div>
+        <img class="am-prev-logo" id="am-logo">
+      </div>
+    </div>
+
+    <button class="add-btn" onclick="addToGallery()">+ Add to showcase</button>
+    <p class="am-msg" id="am-msg"></p>
+  </div>
+
+  <div class="gallery-header">
+    <h3>Partner showcase</h3>
+    <span class="gallery-count" id="gal-count"></span>
+  </div>
+  <div id="gal-empty" class="gal-empty"><div class="gal-empty-icon">🤝</div><p>No testimonials yet — add your first one above.</p></div>
+  <div class="gallery" id="gallery"></div>
+</div>
+</div>
+
+<script>
+// ── CONFIG — paste your Apps Script URL here after deploying ──────────────────
+const WEBHOOK = 'https://script.google.com/macros/s/AKfycbwpJhZKksmapsP8OJRvhbcydDhH7HKlVsUihB5_SySwmkzBU5VPM5tkgJfHvG5MnJAZ/exec';
+const NO_PAY  = ['Indonesia','Malaysia','Philippines'];
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let step=0, pUrl=null, bUrl=null, amAv=null, amBiz=null, amLogo=null, gallery=[];
+
+// ── NAVIGATION ─────────────────────────────────────────────────────────────────
+function showPane(p) {
+  document.getElementById('pane-survey').style.display   = p==='survey'   ? 'block' : 'none';
+  document.getElementById('pane-showcase').style.display = p==='showcase' ? 'block' : 'none';
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',['survey','showcase'][i]===p));
+}
+
+function showStep(n) {
+  for(let i=0;i<=10;i++){const el=document.getElementById('s'+i);if(el)el.style.display=i===n?'block':'none';}
+  document.getElementById('s-result').style.display='none';
+  step=n;
+  document.getElementById('prog').style.width=(n===0?0:(n/10)*100)+'%';
+}
+function nxt(){if(step<10)showStep(step+1);}
+function bck(){if(step>0)showStep(step-1);}
+
+// ── COUNTRY PICK — removes Payments for certain markets ───────────────────────
+function pickCountry(el,val){
+  document.getElementById('cg-country').querySelectorAll('.ch').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('q-country').value=val;
+  const hide=NO_PAY.includes(val);
+  document.getElementById('feat-pay').style.display=hide?'none':'flex';
+  document.getElementById('pay-notice').style.display=hide?'block':'none';
+  if(hide&&document.getElementById('q-feat').value==='Payments'){document.getElementById('q-feat').value='';document.querySelectorAll('.feat-opt').forEach(c=>c.classList.remove('sel'));}
+  rekey();
+  setTimeout(nxt,260);
+}
+
+function rekey(){
+  const vis=[...document.querySelectorAll('.feat-opt')].filter(el=>el.style.display!=='none');
+  'ABCDEFGH'.split('').forEach((k,i)=>{if(vis[i]){const kk=vis[i].querySelector('.ch-k');if(kk)kk.textContent=k;}});
+}
+
+function pickFeat(el,val){
+  document.getElementById('cg-feat').querySelectorAll('.ch').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');document.getElementById('q-feat').value=val;setTimeout(nxt,260);
+}
+
+function pick(el,fid,val,gid){
+  document.getElementById(gid).querySelectorAll('.ch').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');document.getElementById(fid).value=val;setTimeout(nxt,260);
+}
+
+function sRate(v){
+  document.getElementById('q-rating').value=v;
+  document.querySelectorAll('#sstars .sstar').forEach((s,i)=>s.classList.toggle('lit',i<v));
+}
+
+// ── FILE PREVIEW ───────────────────────────────────────────────────────────────
+function prevFile(inp,pid,urlKey){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    if(urlKey==='pUrl')pUrl=e.target.result;else bUrl=e.target.result;
+    document.getElementById(pid).innerHTML=`<img class="prev-img" src="${e.target.result}">`;
+  };r.readAsDataURL(f);
+}
+
+function amPrev(inp,pid,urlKey){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    if(urlKey==='amAv')amAv=e.target.result;
+    else if(urlKey==='amBiz')amBiz=e.target.result;
+    else amLogo=e.target.result;
+    const el=document.getElementById(pid);el.src=e.target.result;el.style.display='block';
+  };r.readAsDataURL(f);
+}
+
+function gv(id){return(document.getElementById(id)||{}).value||'';}
+
+// ── SUBMIT TO GOOGLE SHEETS ────────────────────────────────────────────────────
+async function doSubmit(){
+  const payload={
+    name:        gv('q-name')||'Anonymous',
+    biz:         gv('q-biz')||'My Business',
+    country:     gv('q-country'),
+    feature:     gv('q-feat'),
+    rating:      gv('q-rating'),
+    quote:       gv('q-quote'),
+    result:      gv('q-result'),
+    consent:     gv('q-consent'),
+    personPhoto: pUrl||'',
+    bizPhoto:    bUrl||'',
+    amBlurb:     '',
+    videoLink:   '',
+  };
+
+  // Show spinner
+  document.getElementById('submitting').classList.add('on');
+
+  if(WEBHOOK && WEBHOOK !== 'YOUR_APPS_SCRIPT_URL_HERE'){
+    try {
+      await fetch(WEBHOOK,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    } catch(e){console.warn('Webhook error',e);}
+  }
+
+  document.getElementById('submitting').classList.remove('on');
+  buildCard(payload);
+}
+
+// ── BUILD PARTNERSHIP CARD ─────────────────────────────────────────────────────
+function buildCard(d){
+  const rat=parseInt(d.rating)||5;
+  document.getElementById('r-stars').textContent='★'.repeat(rat)+'☆'.repeat(5-rat);
+  document.getElementById('r-quote').textContent='"'+(d.quote||`${d.name} loves using Fresha for ${d.feature}.`)+'"';
+  document.getElementById('r-name').textContent=d.name;
+  document.getElementById('r-role').textContent=d.biz;
+  document.getElementById('r-feat').textContent=d.feature||'Fresha';
+  document.getElementById('r-biz').textContent=d.biz;
+  document.getElementById('r-biz-title').textContent=d.biz;
+  document.getElementById('r-loc').textContent=d.country;
+
+  document.getElementById('r-partner-logo').innerHTML=pUrl
+    ?`<img class="pc-partner-logo-img" src="${pUrl}" alt="">`
+    :`<div class="pc-partner-logo-init">${(d.biz||'?')[0].toUpperCase()}</div>`;
+
+  document.getElementById('r-av').innerHTML=pUrl
+    ?`<img class="pc-av" src="${pUrl}">`
+    :`<div class="pc-av-init">${(d.name||'?')[0].toUpperCase()}</div>`;
+
+  document.getElementById('r-biz-img').innerHTML=bUrl
+    ?`<img class="pc-biz-img" src="${bUrl}">`
+    :`<div class="pc-biz-ph">🏪</div>`;
+
+  if(d.result){document.getElementById('r-res-wrap').style.display='block';document.getElementById('r-res-val').textContent=d.result;}
+
+  document.getElementById('r-use1').textContent=`Share with existing partners in ${d.country||'your market'} who haven't activated ${d.feature||'this feature'} yet — a peer's real result is the most effective nudge.`;
+  document.getElementById('r-use2').textContent=`Use as your opening message to new prospects in ${d.country||'your market'}. Social proof from a similar business builds trust instantly.`;
+
+  const seqs=[
+    {d:'Day 1',t:`Send to a partner not yet using ${d.feature}`,b:`Forward via WhatsApp: "Thought you'd find this — ${d.name} from ${d.country} just shared this."`,tag:'e'},
+    {d:'Day 3',t:'Follow up with feature context',b:`Send a short explainer and link to the Fresha Academy video for ${d.feature}.`,tag:'e'},
+    {d:'Day 7',t:'First prospect touch',b:`Use the card as your cold outreach opener to new prospects in ${d.country}.`,tag:'p'},
+    {d:'Day 10',t:'Prospect follow-up',b:`Reference the result${d.result?' ("'+d.result+'")':', even if qualitative'} — "Could this work for your business?"`,tag:'p'},
+    {d:'Day 14',t:`Ask ${d.name} to refer a peer`,b:'Reach back and ask them to forward the card to one peer they know personally.',tag:'e'},
+  ];
+  document.getElementById('r-seq').innerHTML=seqs.map((s,i)=>`<div class="seq-step"><div class="seq-num">${i+1}</div><div style="flex:1"><div class="seq-ttl">${s.d} — ${s.t}</div><div class="seq-body">${s.b}</div></div><span class="seq-tag ${s.tag}">${s.tag==='e'?'Existing':'Prospect'}</span></div>`).join('');
+
+  for(let i=0;i<=10;i++){const el=document.getElementById('s'+i);if(el)el.style.display='none';}
+  document.getElementById('s-result').style.display='block';
+  window.scrollTo(0,0);
+}
+
+function copyWA(){
+  const n=gv('q-name')||'Anonymous',b=gv('q-biz'),l=gv('q-country'),f=gv('q-feat'),r=parseInt(gv('q-rating'))||5,q=gv('q-quote'),res=gv('q-result');
+  const txt=`${'⭐'.repeat(r)} *${n}, ${b} — ${l}*\n\n"${q}"${res?'\n\n📈 *Result:* '+res:''}\n\n_Using Fresha ${f}_\n\n🔗 fresha.com/refer`;
+  navigator.clipboard.writeText(txt).then(()=>{const m=document.getElementById('copied');m.textContent='Copied! Paste into WhatsApp ✓';setTimeout(()=>m.textContent='',3000);}).catch(()=>alert('Please copy manually.'));
+}
+
+function resetSurvey(){
+  pUrl=null;bUrl=null;
+  document.querySelectorAll('.q-inp,.q-ta').forEach(i=>i.value='');
+  document.querySelectorAll('input[type=hidden]').forEach(i=>{if(i.id!=='am-rating')i.value='';});
+  document.querySelectorAll('#pane-survey .ch').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('#sstars .sstar').forEach(s=>s.classList.add('lit'));
+  document.getElementById('q-rating').value='5';
+  document.querySelectorAll('.prev-row').forEach(p=>p.innerHTML='');
+  document.getElementById('r-res-wrap').style.display='none';
+  document.getElementById('feat-pay').style.display='flex';
+  document.getElementById('pay-notice').style.display='none';
+  rekey(); showStep(0); window.scrollTo(0,0);
+}
+
+// ── AM SHOWCASE ────────────────────────────────────────────────────────────────
+function amRate(v){
+  document.getElementById('am-rating').value=v;
+  document.querySelectorAll('#am-stars-row .am-star').forEach((s,i)=>s.classList.toggle('lit',i<v));
+}
+
+function addToGallery(){
+  const name=gv('am-name'),biz=gv('am-biz');
+  const msg=document.getElementById('am-msg');
+  if(!name||!biz){msg.textContent='Partner name and business name are required.';msg.style.color='#C0392B';setTimeout(()=>msg.textContent='',3000);return;}
+  gallery.unshift({id:Date.now(),name,biz,country:gv('am-country'),feat:gv('am-feat'),quote:gv('am-quote'),blurb:gv('am-blurb'),rating:parseInt(gv('am-rating'))||5,result:gv('am-result'),video:gv('am-video'),av:amAv,bizImg:amBiz,logo:amLogo});
+  renderGallery();
+  ['am-name','am-biz','am-quote','am-blurb','am-result','am-video'].forEach(id=>document.getElementById(id).value='');
+  ['am-country','am-feat'].forEach(id=>document.getElementById(id).selectedIndex=0);
+  document.getElementById('am-rating').value='5';
+  document.querySelectorAll('#am-stars-row .am-star').forEach(s=>s.classList.add('lit'));
+  ['am-av','am-biz-img','am-logo'].forEach(id=>{const el=document.getElementById(id);el.style.display='none';el.src='';});
+  amAv=null;amBiz=null;amLogo=null;
+  msg.textContent='Added to showcase! ✓';msg.style.color='var(--success)';setTimeout(()=>msg.textContent='',2500);
+}
+
+function delEntry(id){gallery=gallery.filter(g=>g.id!==id);renderGallery();}
+
+function renderGallery(){
+  const wrap=document.getElementById('gallery'),empty=document.getElementById('gal-empty');
+  document.getElementById('gal-count').textContent=gallery.length?`${gallery.length} partner${gallery.length>1?'s':''}`:'' ;
+  if(!gallery.length){empty.style.display='block';wrap.innerHTML='';return;}
+  empty.style.display='none';
+  wrap.innerHTML=gallery.map(g=>`
+    <div class="gal-card">
+      <div class="gal-row">
+        ${g.bizImg?`<img class="gal-img" src="${g.bizImg}" alt="">`:`<div class="gal-img-ph">🏪</div>`}
+        <div class="gal-body">
+          <div class="gal-top">
+            <div class="gal-info">
+              <div class="gal-name">${g.name}</div>
+              <div class="gal-loc">${g.biz}${g.country?' · '+g.country:''}</div>
+            </div>
+            ${g.logo?`<img class="gal-logo" src="${g.logo}" alt="">`:`<div class="gal-logo-ph">${g.biz[0].toUpperCase()}</div>`}
+            <button class="gal-del" onclick="delEntry(${g.id})" title="Remove">✕</button>
+          </div>
+          ${g.quote?`<div class="gal-quote">"${g.quote}"</div>`:''}
+          ${g.blurb?`<div class="gal-blurb">${g.blurb}</div>`:''}
+          <div class="gal-foot">
+            ${g.feat?`<span class="gal-feat">${g.feat}</span>`:''}
+            ${g.result?`<span class="gal-res">📈 ${g.result}</span>`:''}
+            ${g.video?`<a class="gal-vid" href="${g.video}" target="_blank">▶ Watch video</a>`:''}
+            <span class="gal-stars">${'★'.repeat(g.rating)}</span>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+rekey(); showStep(0);
+</script>
+</body>
+</html>
