@@ -65,8 +65,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
 
 /* stars */
 .star-row{display:flex;gap:8px;margin-bottom:8px;}
-.sstar{font-size:34px;cursor:pointer;color:rgba(255,255,255,0.18);transition:color 0.1s;}
-.sstar.lit{color:var(--gold);}
+.sstar{font-size:34px;cursor:pointer;color:#F5C518;transition:all 0.1s;opacity:0.3;filter:saturate(0.3);}
+.sstar.lit{color:#F5C518;opacity:1;filter:saturate(1.4);text-shadow:0 0 16px rgba(245,197,24,0.7);}
 
 /* upload */
 .upload-box{border:1.5px dashed rgba(255,255,255,0.22);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;position:relative;background:rgba(255,255,255,0.05);margin-bottom:10px;transition:all 0.15s;}
@@ -259,16 +259,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
 
   <!-- S1 Name -->
   <div id="s1" style="display:none">
-    <p class="step-lbl">1 of 10 — Your name</p>
+    <p class="step-lbl">1 of 11 — Your name</p>
     <h2 class="q-title">What's your name?</h2>
     <p class="q-hint">First name is fine — this appears on your partnership card.</p>
-    <input class="q-inp" id="q-name" type="text" placeholder="e.g. Aisha" maxlength="60" onkeydown="if(event.key==='Enter'){event.preventDefault();nxt();}">
+    <input class="q-inp" id="q-name" type="text" placeholder="e.g. Monica" maxlength="60" onkeydown="if(event.key==='Enter'){event.preventDefault();nxt();}">
+    <div class="btn-row"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button></div>
+  </div>
+
+  <!-- S1b Job title -->
+  <div id="s1b" style="display:none">
+    <p class="step-lbl">2 of 11 — Your role</p>
+    <h2 class="q-title">What's your job title?</h2>
+    <p class="q-hint">e.g. Owner, Director, Manager — this appears under your name on the card.</p>
+    <input class="q-inp" id="q-title" type="text" placeholder="e.g. Owner" maxlength="60" onkeydown="if(event.key==='Enter'){event.preventDefault();nxt();}">
     <div class="btn-row"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button></div>
   </div>
 
   <!-- S2 Biz -->
   <div id="s2" style="display:none">
-    <p class="step-lbl">2 of 10 — Your business</p>
+    <p class="step-lbl">3 of 11 — Your business</p>
     <h2 class="q-title">Name of your business?</h2>
     <p class="q-hint">Salon, spa, clinic — whatever you run.</p>
     <input class="q-inp" id="q-biz" type="text" placeholder="e.g. Aisha Beauty Studio" maxlength="80" onkeydown="if(event.key==='Enter'){event.preventDefault();nxt();}">
@@ -277,7 +286,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
 
   <!-- S3 Country -->
   <div id="s3" style="display:none">
-    <p class="step-lbl">3 of 10 — Location</p>
+    <p class="step-lbl">4 of 11 — Location</p>
     <h2 class="q-title">Which country are you in?</h2>
     <p class="q-hint">We'll show your story to businesses in similar markets.</p>
     <div class="choices" id="cg-country">
@@ -295,7 +304,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
 
   <!-- S4 Feature -->
   <div id="s4" style="display:none">
-    <p class="step-lbl">4 of 10 — Feature</p>
+    <p class="step-lbl">5 of 11 — Feature</p>
     <h2 class="q-title">Which feature made the biggest difference?</h2>
     <p class="q-hint">Pick the one you couldn't live without.</p>
     <div class="notice" id="pay-notice">ℹ Payments isn't available in your market yet — we've removed it below.</div>
@@ -315,7 +324,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
 
   <!-- S5 Rating -->
   <div id="s5" style="display:none">
-    <p class="step-lbl">5 of 10 — Rating</p>
+    <p class="step-lbl">6 of 11 — Rating</p>
     <h2 class="q-title">How would you rate Fresha overall?</h2>
     <p class="q-hint">Be honest — it helps us improve.</p>
     <div class="star-row" id="sstars">
@@ -331,16 +340,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
 
   <!-- S6 Quote -->
   <div id="s6" style="display:none">
-    <p class="step-lbl">6 of 10 — Your story</p>
-    <h2 class="q-title">What has Fresha done for your business?</h2>
-    <p class="q-hint">Be specific — "bookings went up 40%" lands better than "it's great".</p>
-    <textarea class="q-ta" id="q-quote" placeholder="Before Fresha I managed appointments in a notebook. Now 60% of bookings come in overnight while I sleep..." maxlength="500"></textarea>
+    <p class="step-lbl">7 of 11 — Your story</p>
+    <h2 class="q-title">How has Fresha helped your business?</h2>
+    <p class="q-hint">Tell us in your own words — the more specific the better. Think about things like increased bookings, less time on admin, fewer no-shows, or happier clients.</p>
+    <textarea class="q-ta" id="q-quote" placeholder="e.g. Since using Fresha, I spend half the time on admin and my bookings have gone up 40%. My clients love being able to book online at midnight..." maxlength="500"></textarea>
     <div class="btn-row"><button class="btn-main" onclick="nxt()">OK →</button><button class="btn-back" onclick="bck()">← Back</button></div>
   </div>
 
   <!-- S7 Result -->
   <div id="s7" style="display:none">
-    <p class="step-lbl">7 of 10 — The result</p>
+    <p class="step-lbl">8 of 11 — The result</p>
     <h2 class="q-title">Any specific result or number?</h2>
     <p class="q-hint">Optional but powerful — revenue up, time saved, bookings increased.</p>
     <input class="q-inp" id="q-result" type="text" placeholder="e.g. 40% more bookings in 3 months" maxlength="120" onkeydown="if(event.key==='Enter'){event.preventDefault();nxt();}">
@@ -349,7 +358,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
 
   <!-- S8 Person photo -->
   <div id="s8" style="display:none">
-    <p class="step-lbl">8 of 10 — Your photo</p>
+    <p class="step-lbl">9 of 11 — Your photo</p>
     <h2 class="q-title">Add a photo of yourself.</h2>
     <p class="q-hint">Optional — a headshot makes your story <strong style="color:white">3× more trusted.</strong></p>
     <div class="upload-box">
@@ -363,7 +372,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
 
   <!-- S9 Biz photo -->
   <div id="s9" style="display:none">
-    <p class="step-lbl">9 of 10 — Your salon</p>
+    <p class="step-lbl">10 of 11 — Your salon</p>
     <h2 class="q-title">Got a photo of your business?</h2>
     <p class="q-hint">Optional — reception, treatment room, your team. Any photo of your space.</p>
     <div class="upload-box">
@@ -377,7 +386,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
 
   <!-- S10 Consent -->
   <div id="s10" style="display:none">
-    <p class="step-lbl">10 of 10 — One last thing</p>
+    <p class="step-lbl">11 of 11 — One last thing</p>
     <h2 class="q-title">Happy for us to share your story?</h2>
     <p class="q-hint">We'll never share your contact details — just your quote and photos.</p>
     <div class="choices" id="cg-consent">
@@ -421,10 +430,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
       <div class="pc-quote" id="r-quote"></div>
       <div class="pc-person">
         <div id="r-av"></div>
-        <div>
+        <div style="display:flex;flex-direction:column;gap:2px;">
           <div class="pc-pname" id="r-name"></div>
+          <div id="r-jobtitle" style="font-size:12px;color:rgba(255,255,255,0.55);font-weight:400;"></div>
           <div class="pc-prole" id="r-role"></div>
-          <span class="pc-feat-badge" id="r-feat"></span>
+          <span class="pc-feat-badge" id="r-feat" style="margin-top:6px;"></span>
         </div>
       </div>
     </div>
@@ -542,14 +552,19 @@ function showPane(p) {
   document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',['survey','showcase'][i]===p));
 }
 
+const STEP_ORDER = ['s0','s1','s1b','s2','s3','s4','s5','s6','s7','s8','s9','s10'];
+
 function showStep(n) {
-  for(let i=0;i<=10;i++){const el=document.getElementById('s'+i);if(el)el.style.display=i===n?'block':'none';}
-  document.getElementById('s-result').style.display='none';
-  step=n;
-  document.getElementById('prog').style.width=(n===0?0:(n/10)*100)+'%';
+  STEP_ORDER.forEach((id,i) => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = i === n ? 'block' : 'none';
+  });
+  document.getElementById('s-result').style.display = 'none';
+  step = n;
+  document.getElementById('prog').style.width = (n === 0 ? 0 : (n / (STEP_ORDER.length - 1)) * 100) + '%';
 }
-function nxt(){if(step<10)showStep(step+1);}
-function bck(){if(step>0)showStep(step-1);}
+function nxt(){ if(step < STEP_ORDER.length - 1) showStep(step + 1); }
+function bck(){ if(step > 0) showStep(step - 1); }
 
 // ── COUNTRY PICK — removes Payments for certain markets ───────────────────────
 function pickCountry(el,val){
@@ -611,6 +626,7 @@ function gv(id){return(document.getElementById(id)||{}).value||'';}
 async function doSubmit(){
   const payload={
     name:        gv('q-name')||'Anonymous',
+    jobtitle:    gv('q-title')||'',
     biz:         gv('q-biz')||'My Business',
     country:     gv('q-country'),
     feature:     gv('q-feat'),
@@ -643,6 +659,7 @@ function buildCard(d){
   document.getElementById('r-stars').textContent='★'.repeat(rat)+'☆'.repeat(5-rat);
   document.getElementById('r-quote').textContent='"'+(d.quote||`${d.name} loves using Fresha for ${d.feature}.`)+'"';
   document.getElementById('r-name').textContent=d.name;
+  document.getElementById('r-jobtitle').textContent=d.jobtitle||'';
   document.getElementById('r-role').textContent=d.biz;
   document.getElementById('r-feat').textContent=d.feature||'Fresha';
   document.getElementById('r-biz').textContent=d.biz;
@@ -675,14 +692,14 @@ function buildCard(d){
   ];
   document.getElementById('r-seq').innerHTML=seqs.map((s,i)=>`<div class="seq-step"><div class="seq-num">${i+1}</div><div style="flex:1"><div class="seq-ttl">${s.d} — ${s.t}</div><div class="seq-body">${s.b}</div></div><span class="seq-tag ${s.tag}">${s.tag==='e'?'Existing':'Prospect'}</span></div>`).join('');
 
-  for(let i=0;i<=10;i++){const el=document.getElementById('s'+i);if(el)el.style.display='none';}
+  STEP_ORDER.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
   document.getElementById('s-result').style.display='block';
   window.scrollTo(0,0);
 }
 
 function copyWA(){
   const n=gv('q-name')||'Anonymous',b=gv('q-biz'),l=gv('q-country'),f=gv('q-feat'),r=parseInt(gv('q-rating'))||5,q=gv('q-quote'),res=gv('q-result');
-  const txt=`${'⭐'.repeat(r)} *${n}, ${b} — ${l}*\n\n"${q}"${res?'\n\n📈 *Result:* '+res:''}\n\n_Using Fresha ${f}_\n\n🔗 fresha.com/refer`;
+  const txt=`${'⭐'.repeat(r)} *${n}, ${b} — ${l}*\n\n"${q}"${res?'\n\n📈 *Result:* '+res:''}\n\n_Using Fresha ${f}_\n\n🔗 Book a free demo: https://www.fresha.com/for-business`;
   navigator.clipboard.writeText(txt).then(()=>{const m=document.getElementById('copied');m.textContent='Copied! Paste into WhatsApp ✓';setTimeout(()=>m.textContent='',3000);}).catch(()=>alert('Please copy manually.'));
 }
 
@@ -693,6 +710,7 @@ function resetSurvey(){
   document.querySelectorAll('#pane-survey .ch').forEach(c=>c.classList.remove('sel'));
   document.querySelectorAll('#sstars .sstar').forEach(s=>s.classList.add('lit'));
   document.getElementById('q-rating').value='5';
+  document.getElementById('q-title').value='';
   document.querySelectorAll('.prev-row').forEach(p=>p.innerHTML='');
   document.getElementById('r-res-wrap').style.display='none';
   document.getElementById('feat-pay').style.display='flex';
